@@ -1,6 +1,7 @@
 var http = require('http');
 const PORT = 3000;
 var url = require('url');
+var StringDecoder = require('string_decoder').StringDecoder;
 
 var server = http.createServer(function(req, res){ 
     
@@ -13,10 +14,16 @@ var server = http.createServer(function(req, res){
 
     // Get HTTP method
     var method = req.method.toLowerCase();
+
+    //get the header as an object
+    var headers = req.headers;
+
+
     res.end('Hello World\n');
-    console.log('Request received on path: ' + trimmedPath + 
-        ' with method: ' + method + 
-        ' and with these query string parameters: ', queryStringObject);
+    // console.log('Request received on path: ' + trimmedPath + 
+    //     ' with method: ' + method + 
+    //     ' and with these query string parameters: ', queryStringObject);
+    console.log('Request received with these headers', headers);
 });
 
 server.listen(PORT, function(){
