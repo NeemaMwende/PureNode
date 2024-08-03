@@ -18,12 +18,22 @@ var server = http.createServer(function(req, res){
     //get the header as an object
     var headers = req.headers;
 
+    //get payloads if any
+    var decoder = new StringDecoder('utf-8');
+    var buffer = '';
+    req.on('data', function(data){
+        buffer += decoder.write(data);
+    });
+    req.on('end', function(){
+        buffer += decoder.end();
+
+        //choose the handler this request should go to
 
     res.end('Hello World\n');
     // console.log('Request received on path: ' + trimmedPath + 
     //     ' with method: ' + method + 
     //     ' and with these query string parameters: ', queryStringObject);
-    console.log('Request received with these headers', headers);
+    console.log('Request received with these payloads: ', buffer);headers);
 });
 
 server.listen(PORT, function(){
