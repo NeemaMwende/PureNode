@@ -1,41 +1,39 @@
-var http = require('http');
+const http = require('http');
+const url = require('url');
 const PORT = 3000;
-var url = require('url');
-var StringDecoder = require('string_decoder').StringDecoder;
 
-var server = http.createServer(function(req, res){ 
-    
-    var parsedUrl = url.parse(req.url, true);
-    var path = parsedUrl.pathname;
-    var trimmedpath = path.replace(/^\/+|\/+$/g, '');
+const server = http.createServer((req, res) => {
+    // Parse the URL and extract the path and query string
+    const parsedUrl = url.parse(req.url, true);
+    const path = parsedUrl.pathname;
+    const trimmedPath = path.replace(/^\/+|\/+$/g, '');
+    const queryStringObject = parsedUrl.query;
 
-    //get the query string as an object
-    var queryStringObject = parsedUrl.query;
+    // Get the HTTP method
+    const method = req.method.toLowerCase();
 
-    // Get HTTP method
-    var method = req.method.toLowerCase();
+    // Get the headers
+    const headers = req.headers;
 
-    //get the header as an object
-    var headers = req.headers;
-
-    //get payloads if any
-    var decoder = new StringDecoder('utf-8');
-    var buffer = '';
-    req.on('data', function(data){
-        buffer += decoder.write(data);
+    // Collect the payload if any
+    let buffer = '';
+    req.on('data', (data) => {
+        buffer += data.toString();
     });
-    req.on('end', function(){
-        buffer += decoder.end();
+    req.on('end', () => {
+        // Log the request details
+        console.log('Request received on path:', trimmedPath);
+        console.log('Method:', method);
+        console.log('Query string parameters:', queryStringObject);
+        console.log('Headers:', headers);
+        console.log('Payload:', buffer);
 
-        //choose the handler this request should go to
-
-    res.end('Hello World\n');
-    // console.log('Request received on path: ' + trimmedPath + 
-    //     ' with method: ' + method + 
-    //     ' and with these query string parameters: ', queryStringObject);
-    console.log('Request received with these payloads: ', buffer);headers);
+        // Send response
+        res.writeHead(200, { 'Content-Type': 'text/plain' });
+        res.end('Hello World\n');
+    });
 });
 
-server.listen(PORT, function(){
+server.listen(PORT, () => {
     console.log(`The server is listening on port ${PORT}`);
 });
